@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AfyaGrid Kenya | County Clinic Triage & Medicine Supply Network</title>
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <style>
+        .clinic-card { background: #fff; padding: 0.95rem; border-radius: 0.5rem; border: 1px solid #cbd5e1; box-shadow: 0 1px 2px rgba(0,0,0,0.04); cursor: pointer; transition: transform 0.15s, border-color 0.15s; }
+        .clinic-card:hover { transform: translateY(-2px); border-color: #0f766e; }
+        .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); z-index: 2000; align-items: center; justify-content: center; padding: 1rem; }
+        .modal-backdrop.open { display: flex; }
+        .modal-box { background: #fff; max-width: 480px; width: 100%; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-input { width: 100%; padding: 0.55rem; border: 1px solid #cbd5e1; border-radius: 0.4rem; margin-top: 0.25rem; margin-bottom: 0.85rem; font-size: 0.9rem; }
+        .btn-save { background: #0f766e; color: #fff; border: none; padding: 0.6rem 1.1rem; border-radius: 0.45rem; font-weight: 700; cursor: pointer; }
+        .btn-cancel { background: #e2e8f0; color: #334155; border: none; padding: 0.6rem 1rem; border-radius: 0.45rem; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-flex">
+            <div class="brand">
+                <span style="font-size: 1.75rem;">🏥</span>
+                <div>
+                    <h1>AfyaGrid Kenya</h1>
+                    <p>County Triage & Essential Medicine Intelligence</p>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <span id="connection-badge" class="badge-db">Connecting to DB...</span>
+                <a href="dashboard.html?role=chp" class="btn-primary">Launch Operational Dashboard →</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="hero">
+        <div class="container">
+            <span class="hero-tag">Digital Health Infrastructure • Kenya</span>
+            <h2>Zero Preventable Stockouts. Faster Rural Patient Referrals.</h2>
+            <p class="hero-desc">
+                AfyaGrid connects Community Health Promoters, Level 2–4 clinics, and County Pharmacists in real time to triage urgent cases and redistribute essential medicines before batches expire or run out.
+            </p>
+            <div class="role-grid">
+                <a href="dashboard.html?role=chp" class="role-card">
+                    <div class="role-header"><span class="role-title">🩺 Community Health Promoter</span><span class="demo-pill pill-green">Demo</span></div>
+                    <p>Run offline-capable symptom triage & generate emergency clinic referrals.</p>
+                </a>
+                <a href="dashboard.html?role=nurse" class="role-card">
+                    <div class="role-header"><span class="role-title">💊 Clinic Nurse / Pharmacist</span><span class="demo-pill pill-amber">Demo</span></div>
+                    <p>Manage KEMSA drug batches, track 60-day expiry alerts & dispense stock.</p>
+                </a>
+                <a href="dashboard.html?role=county" class="role-card">
+                    <div class="role-header"><span class="role-title">📊 County Health Officer</span><span class="demo-pill pill-blue">Demo</span></div>
+                    <p>Approve inter-clinic medicine transfers & monitor county disease trends.</p>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="kpi-grid">
+            <div class="card"><p class="kpi-label">Connected Facilities</p><p id="stat-clinics" class="kpi-value text-teal">--</p><p class="kpi-sub">Across 4 Kenyan Counties</p></div>
+            <div class="card"><p class="kpi-label">Available Emergency Beds</p><p id="stat-beds" class="kpi-value text-green">--</p><p class="kpi-sub">Ready for Red/Yellow referrals</p></div>
+            <div class="card"><p class="kpi-label">Low Stock Alerts</p><p id="stat-low-stock" class="kpi-value text-red">--</p><p class="kpi-sub">Below clinic reorder threshold</p></div>
+            <div class="card"><p class="kpi-label">Logged Triage Cases</p><p id="stat-cases" class="kpi-value text-amber">--</p><p class="kpi-sub">Anonymized patient assessments</p></div>
+        </section>
+
+        <section class="content-grid">
+            <div class="card">
+                <div class="section-header">
+                    <div>
+                        <h3>Live Kenyan Health Facility Network</h3>
+                        <p class="section-sub">Click any facility card below to inspect inventory or update emergency beds.</p>
+                    </div>
+                    <span class="status-online">● Click Card to Edit</span>
+                </div>
+                <div id="kenya-map"></div>
+            </div>
+
+            <div class="card">
+                <div style="margin-bottom: 1rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700;">Essential Drug Stock Watch</h3>
+                    <p class="section-sub">Real-time KEMSA supply status sorted by lowest stock</p>
+                </div>
+                <div id="stock-alert-list" class="stock-list">
+                    <p class="section-sub">Loading live inventory from PostgreSQL...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="clinic-modal" class="modal-backdrop">
+        <div class="modal-box">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.75rem;">
+                <h3 id="m-title" style="color:#0f766e; font-size:1.15rem;">Clinic Details</h3>
+                <button onclick="closeClinicModal()" style="background:none; border:none; font-size:1.25rem; cursor:pointer;">✕</button>
+            </div>
+            <p id="m-subtitle" style="font-size:0.8rem; color:#475569; margin-bottom:1rem;"></p>
+            <label style="font-size:0.8rem; font-weight:700;">Available Emergency Beds</label>
+            <input type="number" id="m-beds" class="modal-input" min="0" max="100">
+            <label style="font-size:0.8rem; font-weight:700;">Operational Status</label>
+            <select id="m-status" class="modal-input">
+                <option value="true">🟢 Open 24/7 (Accepting Referrals)</option>
+                <option value="false">🔴 At Capacity / Temporarily Closed</option>
+            </select>
+            <div style="margin-bottom:1rem;">
+                <p style="font-size:0.8rem; font-weight:700; margin-bottom:0.4rem;">Medicines Stocked at This Facility:</p>
+                <div id="m-drugs" style="font-size:0.78rem; background:#f8fafc; padding:0.65rem; border-radius:0.4rem; border:1px solid #e2e8f0; max-height:110px; overflow-y:auto;"></div>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:0.5rem;">
+                <button class="btn-cancel" onclick="closeClinicModal()">Cancel</button>
+                <button class="btn-save" onclick="saveClinicChanges()">Save Changes to DB</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-flex">
+            <p><strong>AfyaGrid Kenya</strong> — Built by Lynn Chebiwott | BSc IT Portfolio Project</p>
+            <p>Stack: HTML5 • Custom CSS3 • JavaScript ES6 • Supabase PostgreSQL REST API</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/home.js"></script>
+</body>
+</html>

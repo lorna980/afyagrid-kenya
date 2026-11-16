@@ -1,0 +1,150 @@
+/* AfyaGrid Kenya - Standalone Production Stylesheet (Zero CDN Dependency) */
+:root {
+    --teal-900: #134e4a;
+    --teal-800: #115e59;
+    --teal-700: #0f766e;
+    --emerald-800: #065f46;
+    --emerald-600: #059669;
+    --amber-500: #f59e0b;
+    --amber-600: #d97706;
+    --rose-600: #e11d48;
+    --slate-900: #0f172a;
+    --slate-800: #1e293b;
+    --slate-600: #475569;
+    --slate-500: #64748b;
+    --slate-200: #e2e8f0;
+    --slate-50: #f8fafc;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--slate-50);
+    color: var(--slate-800);
+    line-height: 1.5;
+}
+
+.container { max-width: 1200px; margin: 0 auto; padding: 0 1.25rem; }
+
+/* Navigation Bar */
+.navbar {
+    background-color: var(--teal-800);
+    color: #ffffff;
+    padding: 1rem 0;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.nav-flex { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; }
+.brand { display: flex; align-items: center; gap: 0.75rem; }
+.brand h1 { font-size: 1.25rem; font-weight: 700; }
+.brand p { font-size: 0.75rem; color: #99f6e4; }
+.nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+
+.badge-db {
+    font-size: 0.75rem;
+    background: var(--teal-900);
+    color: #ccfbf1;
+    padding: 0.35rem 0.85rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.btn-primary {
+    background-color: var(--amber-500);
+    color: var(--slate-900);
+    font-weight: 700;
+    font-size: 0.875rem;
+    padding: 0.55rem 1rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.btn-primary:hover { background-color: var(--amber-600); }
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, var(--teal-900), var(--teal-800), var(--emerald-800));
+    color: #ffffff;
+    padding: 3rem 0;
+}
+.hero-tag {
+    display: inline-block;
+    background: rgba(15, 118, 110, 0.8);
+    color: #ccfbf1;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+.hero h2 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; max-width: 750px; }
+.hero-desc { color: #ccfbf1; font-size: 1.05rem; max-width: 720px; margin-bottom: 2rem; }
+
+/* Role Demo Cards */
+.role-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+.role-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 0.75rem;
+    padding: 1.15rem;
+    text-decoration: none;
+    color: #ffffff;
+    transition: background 0.2s, transform 0.2s;
+}
+.role-card:hover { background: rgba(255, 255, 255, 0.18); transform: translateY(-2px); }
+.role-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem; }
+.role-title { font-weight: 700; font-size: 1.05rem; }
+.demo-pill { font-size: 0.7rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 0.25rem; color: var(--slate-900); }
+.pill-green { background: #34d399; }
+.pill-amber { background: #fbbf24; }
+.pill-blue { background: #7dd3fc; }
+.role-card p { font-size: 0.8rem; color: #ccfbf1; }
+
+/* Main Content & KPI Cards */
+main { padding: 2rem 0; }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+.card {
+    background: #ffffff;
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--slate-200);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.kpi-label { font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; }
+.kpi-value { font-size: 2rem; font-weight: 800; margin: 0.25rem 0; }
+.text-teal { color: var(--teal-700); }
+.text-green { color: var(--emerald-600); }
+.text-red { color: var(--rose-600); }
+.text-amber { color: var(--amber-600); }
+.kpi-sub { font-size: 0.75rem; color: var(--slate-500); }
+
+/* Map & Stock Split Layout */
+.content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+@media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
+
+.section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.section-header h3 { font-size: 1.1rem; font-weight: 700; }
+.section-sub { font-size: 0.8rem; color: var(--slate-500); }
+.status-online { font-size: 0.75rem; font-weight: 600; background: #d1fae5; color: #065f46; padding: 0.25rem 0.65rem; border-radius: 999px; }
+
+#kenya-map { width: 100%; height: 380px; border-radius: 0.5rem; border: 1px solid var(--slate-200); background: #e2e8f0; }
+
+/* Stock List Items */
+.stock-list { display: flex; flex-direction: column; gap: 0.75rem; max-height: 380px; overflow-y: auto; }
+.stock-item { padding: 0.85rem; border-radius: 0.5rem; border: 1px solid var(--slate-200); background: var(--slate-50); }
+.stock-item.low { border-color: #fecdd3; background: #fff1f2; }
+.stock-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+.stock-name { font-size: 0.875rem; font-weight: 700; }
+.badge-low { font-size: 0.65rem; font-weight: 800; background: var(--rose-600); color: #fff; padding: 0.15rem 0.45rem; border-radius: 0.25rem; }
+.badge-ok { font-size: 0.65rem; font-weight: 700; background: #d1fae5; color: #065f46; padding: 0.15rem 0.45rem; border-radius: 0.25rem; }
+.stock-clinic { font-size: 0.75rem; color: var(--slate-600); margin-top: 0.25rem; }
+.stock-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--slate-500); margin-top: 0.5rem; }
+
+/* Footer */
+footer { background: var(--slate-900); color: #94a3b8; font-size: 0.8rem; padding: 1.5rem 0; margin-top: 3rem; }
+.footer-flex { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem; }
