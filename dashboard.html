@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operational Workspace | AfyaGrid Kenya</title>
+    <link rel="stylesheet" href="assets/css/custom.css">
+    <style>
+        .role-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; background: #fff; padding: 0.75rem; border-radius: 0.75rem; border: 1px solid #e2e8f0; margin-bottom: 1.5rem; }
+        .tab-btn { padding: 0.6rem 1.1rem; border-radius: 0.5rem; border: 1px solid #cbd5e1; background: #f8fafc; font-weight: 700; font-size: 0.85rem; cursor: pointer; color: #334155; }
+        .tab-btn.active { background: #0f766e; color: #fff; border-color: #0f766e; }
+        .panel { display: none; }
+        .panel.active { display: block; }
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+        label { display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 0.35rem; }
+        input, select { width: 100%; padding: 0.6rem 0.75rem; border: 1px solid #cbd5e1; border-radius: 0.5rem; font-size: 0.875rem; font-family: inherit; }
+        .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.5rem; margin: 0.75rem 0 1.25rem; }
+        .chk-item { display: flex; align-items: center; gap: 0.5rem; background: #f8fafc; padding: 0.55rem 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.5rem; font-size: 0.82rem; cursor: pointer; }
+        .chk-item input { width: auto; }
+        .btn-submit { background: #0f766e; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 0.5rem; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+        .btn-sm { padding: 0.35rem 0.7rem; font-size: 0.75rem; font-weight: 700; border-radius: 0.35rem; border: none; cursor: pointer; }
+        .btn-dispense { background: #e2e8f0; color: #1e293b; }
+        .btn-approve { background: #059669; color: #fff; }
+        .referral-box { margin-top: 1.5rem; padding: 1.25rem; border-radius: 0.75rem; border-left: 6px solid #0f766e; background: #f0fdfa; }
+        .referral-box.RED { border-left-color: #e11d48; background: #fff1f2; }
+        .referral-box.YELLOW { border-left-color: #d97706; background: #fffbeb; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+        th, td { text-align: left; padding: 0.75rem; border-bottom: 1px solid #e2e8f0; }
+        th { background: #f1f5f9; font-weight: 700; color: #475569; }
+        .pill-urg { padding: 0.2rem 0.55rem; border-radius: 999px; font-weight: 800; font-size: 0.7rem; }
+        .urg-RED { background: #ffe4e6; color: #be123c; }
+        .urg-YELLOW { background: #fef3c7; color: #b45309; }
+        .urg-GREEN { background: #d1fae5; color: #065f46; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="container nav-flex">
+            <div class="brand">
+                <span style="font-size: 1.6rem;">🏥</span>
+                <div>
+                    <h1>AfyaGrid Operational Workspace</h1>
+                    <p>Role-Based Clinical Triage, Pharmacy Inventory & County Logistics</p>
+                </div>
+            </div>
+            <div class="nav-actions">
+                <span id="offline-queue-badge" class="badge-db">0 Offline Cached Cases</span>
+                <a href="index.html" class="btn-primary">← Public Network Overview</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="role-tabs">
+            <button type="button" class="tab-btn active" data-role="chp" onclick="switchRole('chp')">🩺 1. CHP Symptom Triage & Referral</button>
+            <button type="button" class="tab-btn" data-role="nurse" onclick="switchRole('nurse')">💊 2. Clinic Nurse & Drug Inventory</button>
+            <button type="button" class="tab-btn" data-role="county" onclick="switchRole('county')">📊 3. County Officer & Stock Transfers</button>
+        </div>
+
+        <!-- PANEL 1: CHP SYMPTOM TRIAGE -->
+        <section id="panel-chp" class="panel active">
+            <div class="content-grid">
+                <div class="card">
+                    <h3 style="margin-bottom: 0.25rem;">New Patient Symptom Assessment</h3>
+                    <p class="section-sub" style="margin-bottom: 1rem;">Works offline. Cases save locally and sync automatically to PostgreSQL.</p>
+                    <div id="triage-form">
+                        <div class="form-grid">
+                            <div>
+                                <label>Patient Age Group</label>
+                                <select id="t-age">
+                                    <option value="Child (Under 5)">Child (Under 5 Years)</option>
+                                    <option value="Pregnant Woman">Pregnant Woman</option>
+                                    <option value="Adult (18-59)" selected>Adult (18–59 Years)</option>
+                                    <option value="Elderly (60+)">Elderly (60+ Years)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>County Location</label>
+                                <select id="t-county">
+                                    <option value="Nairobi">Nairobi County</option>
+                                    <option value="Kisumu">Kisumu County</option>
+                                    <option value="Nakuru">Nakuru County</option>
+                                    <option value="Uasin Gishu">Uasin Gishu County</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <label>Select Observed Symptoms & Danger Signs:</label>
+                        <div class="checkbox-grid">
+                            <label class="chk-item"><input type="checkbox" value="High fever & chills" data-score="2"> High fever & chills</label>
+                            <label class="chk-item"><input type="checkbox" value="Difficulty breathing / chest pain" data-score="5"> Difficulty breathing (Red Flag)</label>
+                            <label class="chk-item"><input type="checkbox" value="Convulsions / lethargy" data-score="5"> Convulsions / lethargy (Red Flag)</label>
+                            <label class="chk-item"><input type="checkbox" value="Maternal danger signs" data-score="5"> Maternal danger signs (Red Flag)</label>
+                            <label class="chk-item"><input type="checkbox" value="Severe vomiting / dehydration" data-score="4"> Severe vomiting / dehydration</label>
+                            <label class="chk-item"><input type="checkbox" value="Persistent cough (>3 days)" data-score="2"> Persistent cough (&gt;3 days)</label>
+                            <label class="chk-item"><input type="checkbox" value="Mild sore throat / runny nose" data-score="1"> Mild sore throat / runny nose</label>
+                            <label class="chk-item"><input type="checkbox" value="Body aches / mild headache" data-score="1"> Body aches / mild headache</label>
+                        </div>
+
+                        <div style="margin-bottom: 1rem;">
+                            <label>Additional Clinical Notes (Optional)</label>
+                            <input type="text" id="t-notes" placeholder="e.g., Fever started yesterday evening, Temp 39.2°C">
+                        </div>
+
+                        <button type="button" class="btn-submit" onclick="runTriageAssessment()">Run Triage Assessment & Generate Referral →</button>
+                    </div>
+                    <div id="referral-output"></div>
+                </div>
+
+                <div class="card">
+                    <h3 style="margin-bottom: 0.25rem;">Recent Triage & Referral Log</h3>
+                    <p class="section-sub" style="margin-bottom: 1rem;">Anonymized patient codes protecting medical privacy</p>
+                    <div id="triage-history-list" class="stock-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PANEL 2: CLINIC NURSE & DRUG INVENTORY -->
+        <section id="panel-nurse" class="panel">
+            <div class="card" style="margin-bottom: 1.5rem;">
+                <h3 style="margin-bottom: 0.25rem;">Receive New KEMSA Drug Batch</h3>
+                <p class="section-sub" style="margin-bottom: 1rem;">Log incoming medicine stock into clinic inventory</p>
+                <div class="form-grid" style="align-items: end;">
+                    <div>
+                        <label>Facility</label>
+                        <select id="s-clinic">
+                            <option value="1">Embakasi Health Centre (Nairobi)</option>
+                            <option value="2">Mama Lucy Kibaki Hospital (Nairobi)</option>
+                            <option value="3">Kombewa Sub-County Hospital (Kisumu)</option>
+                            <option value="4">Lanet Health Centre (Nakuru)</option>
+                            <option value="5">Turbo Sub-County Hospital (Uasin Gishu)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Essential Medicine Name</label>
+                        <input type="text" id="s-drug" placeholder="e.g., Artemether-Lumefantrine (AL)">
+                    </div>
+                    <div>
+                        <label>Quantity (Boxes/Units)</label>
+                        <input type="number" id="s-qty" min="1" value="100">
+                    </div>
+                    <div>
+                        <label>Expiry Date</label>
+                        <input type="date" id="s-exp" value="2027-09-30">
+                    </div>
+                    <div>
+                        <button type="button" class="btn-submit" style="width: 100%;" onclick="addDrugBatch()">+ Add Stock Batch</button>
+
+                        </div>
+                </div>
+            </div>
+
+            <div class="card" style="overflow-x: auto;">
+                <h3 style="margin-bottom: 0.75rem;">Facility Medicine Inventory & Expiry Watch</h3>
+                <table>
+                    <thead>
+                        <tr><th>Medicine Name</th><th>Clinic Facility</th><th>Batch #</th><th>Stock Qty</th><th>Expiry Date</th><th>Status</th><th>Action</th></tr>
+                    </thead>
+                    <tbody id="inventory-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="panel-county" class="panel">
+            <div class="card" style="overflow-x: auto;">
+                <h3 style="margin-bottom: 0.25rem;">Inter-Clinic Stock Redistribution Requests</h3>
+                <p class="section-sub" style="margin-bottom: 1rem;">Prevent stockouts by approving transfers from surplus hospitals to low-stock dispensaries.</p>
+                <table>
+                    <thead>
+                        <tr><th>Transfer ID</th><th>From (Surplus Clinic)</th><th>To (Deficit Clinic)</th><th>Medicine</th><th>Units</th><th>Status</th><th>Officer Decision</th></tr>
+                    </thead>
+                    <tbody id="transfers-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container footer-flex">
+            <p><strong>AfyaGrid Kenya</strong> — Built by Lynn Chebiwott | BSc IT Portfolio Project</p>
+            <p>Stack: HTML5 • Custom CSS3 • JavaScript ES6 • Supabase PostgreSQL REST API</p>
+        </div>
+    </footer>
+
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/dashboard.js"></script>
+</body>
+</html>
