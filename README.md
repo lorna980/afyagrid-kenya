@@ -1,13 +1,7 @@
-# 🏥 AfyaGrid Kenya
-### Offline-Resilient County Clinic Triage & Essential Medicine Supply Intelligence Platform
+🏥 AfyaGrid Kenya
+Offline-Resilient County Clinic Triage & Essential Medicine Supply Intelligence Platform
 
-[![Live Demo](https://shields.io)](https://github.io)
-[![Database](https://shields.io)](https://supabase.com)
-[![Frontend](https://shields.io)]()
-
----
-
-## 1. Executive Summary & Problem Statement
+1. Executive Summary & Problem Statement
 
 Primary healthcare delivery across Kenyan Level 2 dispensaries, Level 3 health centres, and Level 4 sub-county hospitals faces two critical operational bottlenecks:
 
